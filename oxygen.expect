@@ -1,11 +1,11 @@
-#!/usr/bin/expect
+#!/usr/bin/expect 
 
-# Configuração das cores
+# Configuração das cores para mensagens de erro, sucesso e informações
 set red "\033\[1;31m"
 set green "\033\[0;32m"
 set reset "\033\[0m"
 
-# Funções para mensagens coloridas
+# Funções para mensagens coloridas de erro, sucesso e informações
 proc print_error {message} {
     global red reset
     puts "${red}${message}${reset}"
@@ -21,21 +21,21 @@ proc print_info {message} {
     puts "${reset}${message}"
 }
 
-# ...
+# ... e aqui começa o script Telnet
 
-# Verificar se o número correto de argumentos foi fornecido
+# Verificar se o número correto de argumentos foi fornecido (4)
 if {[llength $argv] != 4} {
     print_error "Erro: Uso incorreto. Uso: $argv0 <endereço_IP_do_host> <nome_de_usuário> <senha> <nome_do_arquivo_de_comandos>"
     exit 1
 }
 
-# Obter informações de host, nome de usuário, senha e nome do arquivo de comandos dos argumentos
-set host [lindex $argv 0]
+# Obter informações de host, nome de usuário, senha e nome do arquivo de comandos dos argumentos da linha de comando (argv) e armazená-los em variáveis locais (semelhante a $1, $2, $3, $4) para uso posterior no script ($host, $usuario, $senha, $comandos_file)
+set host [lindex $argv 0] 
 set usuario [lindex $argv 1]
 set senha [lindex $argv 2]
 set comandos_file [lindex $argv 3]
 
-# Ler os comandos do arquivo especificado
+# Ler os comandos do arquivo especificado na linha de comando e armazená-los em uma variável local
 set comandos [exec cat $comandos_file]
 
 # Iniciar a sessão Telnet
@@ -45,36 +45,35 @@ send "$usuario\r"
 expect "Password: "
 send "$senha\r"
 
-# Aguardar o prompt após o login
+# Aguardar o prompt após o login "User>"
 expect "User>"
 
-# Executar comando "enable" que solicita uma senha
+# Executar comando "enable" que solicita uma senha e aguardar o prompt após a autenticação "enable"
 send "enable\r"
 expect "Password:"
 send "$senha\r"
 
-# Aguardar o prompt após a autenticação "enable"
+# Aguardar o prompt após a autenticação "enable" "#"
 expect "#"
 send "cd onu\r"
 
-# Dividir os comandos em uma lista
+# Dividir os comandos em uma lista de comandos (um comando por linha)
 set lista_comandos [split $comandos "\n"]
 
-# Executar comandos Telnet com pausas
+# Executar comandos Telnet com pausas de X segundos entre os comandos
 foreach comando $lista_comandos {
   send "$comando\r"
   expect "#"
 
-  # Adicionar uma pausa de 5 segundos após cada comando, se necessário
+  # Adicionar uma pausa de X segundos após cada comando, se necessário (descomente a linha abaixo e altere o valor de "0.3" para o número de segundos desejado)
   sleep 0.3
 }
 
-# Fechar a sessão Telnet
+# Fechar a sessão Telnet (exit é usado como delimitador para o obsidian) e aguardar o prompt "User>"
 send "exit\r"
 expect eof
 
-# Exibir mensagem de conclusão
+# ... e aqui termina o script Telnet
+
+# Exibir mensagem de conclusão do script
 print_success "Execução do script Telnet concluída com sucesso!"
-
-
-# 5 p s
