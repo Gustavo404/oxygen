@@ -14,7 +14,7 @@ Um controlador de telnet em expect, que se conecta com a OLT e executa uma lista
 
 ## Dependências
 
-1. Ambiente Unix/Linux com Bash.
+1. Ambiente Unix/Linux com iterpretador Bash.
 2. A presença do script Expect chamado "oxygen.expect" (fornecido aqui) para a interação Telnet.
 
 <br>
