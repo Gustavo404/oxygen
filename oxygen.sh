@@ -103,10 +103,10 @@ if [ "$response" = "Y" ] || [ "$response" = "y" ]; then
   yellow_message "Extração de Dados"
   separator
 
-  # Extratores de dados: (com variantes para teste e debug)
+  # Extratores de dados: (com variante para teste e debug)
   grep -E 'RECV POWER   :|onu is in unactive!|\[ ERR ' $output # apenas exibição
   grep -E 'RECV POWER   :|onu is in unactive!|\[ ERR ' $output > RP_$input # grava a extração
   # sed -n '/RECV POWER   :/p;/onu is in unactive!/p;/\[ ERR /p' arquivo.txt
 else
-  yellow_message "Você escolheu não formatar o arquivo."
+  yellow_message "Você escolheu não filtrar o arquivo."
 fi
