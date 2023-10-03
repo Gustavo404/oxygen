@@ -69,7 +69,7 @@ foreach comando $lista_comandos {
   sleep 0.5
 }
 
-send ""
+send "$\r"
 # ... e aqui termina o script Telnet
 
 # Exibir mensagem de conclusão do script
