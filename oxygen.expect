@@ -68,11 +68,7 @@ foreach comando $lista_comandos {
   # Adicionar uma pausa de X segundos após cada comando, se necessário (descomente a linha abaixo e altere o valor de "0.3" para o número de segundos desejado)
   sleep 0.5
 }
-
-# Fechar a sessão Telnet (exit é usado como delimitador para o obsidian) e aguardar o prompt "User>"
-send "exit\r"
-expect eof
-
+# >/
 # ... e aqui termina o script Telnet
 
 # Exibir mensagem de conclusão do script
