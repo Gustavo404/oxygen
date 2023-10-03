@@ -10,148 +10,133 @@
 
 Um controlador de telnet em expect, que se conecta com a OLT e executa uma lista de comandos informados no telnet. Além disso, o Oxygen é responsável por elevar o privilégio ou mudar de shell, se necessário. Embora pareça simples, esse script possui a enorme responsabilidade de executar esses procedimentos sem sobrecarregar ou travar a OLT. O Oxygen também solicita os dados de login, garantindo a segurança dessas informações. 
 
-<br>
+## **Código `oxygen.sh` (Bash)**
 
-## Dependências
+O arquivo **`oxygen.sh`** é um script em Bash que controla uma conexão Telnet e a execução de comandos em um dispositivo de rede, como uma OLT. A seguir, estão detalhadas as principais funcionalidades e processos deste código:
 
-1. Ambiente Unix/Linux com iterpretador Bash.
-2. A presença do script Expect chamado "oxygen.expect" (fornecido aqui) para a interação Telnet.
+## **Uso**
 
-<br>
+O **`oxygen.sh`** é um script que permite a conexão Telnet e a execução de comandos em dispositivos de rede, como OLTs. Abaixo estão os passos para utilizar o código:
 
-## Instalação (Exemplo usando Git):
+1. **Execução do Script**:
+    
+    Execute o script **`oxygen.sh`** a partir do terminal:
+    
+    ```bash
+    bash oxygen.sh
+    ```
+    
+2. **Coleta de Dados**:
+    
+    O script irá solicitar informações essenciais:
+    
+    - Nome do arquivo de entrada.
+    - Nome do arquivo de saída. (este input será removido)
+    - Endereço IP para a conexão Telnet.
+    - Nome de usuário Telnet.
+    - Senha Telnet (será ocultada durante a digitação).
+3. **Verificação de Entradas**:
+    
+    O script verifica a existência do arquivo de entrada especificado, se o arquivo de saída já existe e valida o endereço IP, nome de usuário e senha fornecidos.
+    
+4. **Processamento de Dados de Entrada**:
+    
+    O script verifica se o arquivo de entrada contém IDs de ONTs e ONUs. Caso contrário, ele oferece a opção de converter esses IDs em comandos do Telnet.
+    
+5. **Execução do Script Telnet**:
+    
+    O script inicia a execução do script Telnet, interagindo com o dispositivo de rede e executando os comandos especificados no arquivo de entrada.
+    
+6. **Formatação do Arquivo de Saída**:
+    
+    Após a conclusão da execução do Telnet, o script oferece a opção de extrair informações específicas do arquivo de saída e formatá-lo de acordo com a escolha.
+    
+7. **Finalização do Script**:
+    
+    O script exibirá uma mensagem de conclusão e encerrará a execução.
+    
 
-1. Instale o pacote Git em sua máquina local(se já não o possuir):
+### **Funções de Exibição de Mensagens**
 
-  ```bash
-   apt install git
-  ```
+- **`green_message()`**: Exibe mensagens em verde.
+- **`yellow_message()`**: Exibe mensagens em amarelo.
+- **`red_message()`**: Exibe mensagens em vermelho.
 
-2. Clone este repositório Git em sua máquina local:
+### **Funções para Manipulação de Arquivos**
 
-  ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-  ```
+- **`coletar_dados()`**: Coleta dados de entrada do usuário, como nome de arquivo de entrada, nome de arquivo de saída, endereço IP Telnet, nome de usuário e senha Telnet.
+- **`verificar_arquivo_entrada()`**: Verifica se o arquivo de entrada especificado existe.
+- **`verificar_arquivo_saida()`**: Verifica se o arquivo de saída especificado já existe e pede ao usuário para confirmar a sobrescrita, se aplicável.
+- **`verificar_endereco_ip()`**: Verifica se o endereço IP especificado é válido.
+- **`verificar_nome_usuario()`**: Verifica se o nome de usuário Telnet foi fornecido.
+- **`verificar_senha()`**: Verifica se a senha Telnet foi fornecida.
+- **`verificar_arquivo_entrada_ont_onu()`**: Verifica se o arquivo de entrada contém IDs de ONTs e ONUs e oferece a opção de executar um processo chamado "vortex" para convertê-los em comandos Telnet.
 
-<br>
+### **Função para Execução do Script Telnet**
 
-## Uso
+- **`executar_script_telnet()`**: Inicia a execução do script Telnet com base nas informações coletadas, utilizando o comando **`expect`** para interagir com o dispositivo de rede.
 
-Navegue até o diretório onde o script está localizado:
+### **Função para Limpar Arquivos Temporários**
 
-  ```bash
-  cd seu-repositorio
-  ```
+- **`limpar_arquivos_temporarios()`**: Remove arquivos temporários criados durante o processo.
 
-Execute o script Bash da seguinte maneira:
+### **Função para Formatar o Arquivo de Saída**
 
-  ```bash
-  ./codigo1.sh
-  ```
+- **`formatar_arquivo_saida()`**: Permite ao usuário escolher se deseja extrair informações específicas do arquivo de saída do Telnet, como dados de potência de recepção, e formata o arquivo de saída de acordo com a escolha.
 
-Siga as instruções interativas para inserir informações de entrada, como nome do arquivo de entrada, nome do arquivo de saída, endereço IP para Telnet, nome de usuário Telnet e senha Telnet.
-O script executará a coleta de dados Telnet e, opcionalmente, formatará o arquivo de saída de acordo com sua escolha.
+### **Mensagem de Finalização**
 
-<br>
+- **`exibir_mensagem_finalizacao()`**: Exibe uma mensagem de conclusão do script.
 
-## Documentação: Código 1 - Script de Gerência de Fluxo de Dados
+## **Código `oxygen.expect` (Expect)**
 
-Este script Bash é projetado para coletar dados de uma OLT (Optical Line Terminal) por meio de Telnet e realizar a formatação dos resultados. A documentação a seguir detalha suas principais características e funcionalidades.
+O arquivo **`oxygen.expect`** é um script Expect que automatiza a conexão Telnet e a execução de comandos em um dispositivo de rede. A seguir, estão detalhadas as principais funcionalidades e processos deste código:
 
-### Introdução
-O objetivo principal deste script é facilitar a interação com a OLT por meio de Telnet, coletando informações e formatando-as de acordo com as necessidades do usuário.
+## **Uso**
 
-### Funções de Mensagens Coloridas
-O script começa definindo funções para exibir mensagens coloridas no terminal, melhorando a experiência do usuário durante a execução do script. As funções são:
-- `green_message`: Exibe mensagens em verde.
-- `yellow_message`: Exibe mensagens em amarelo.
-- `red_message`: Exibe mensagens em vermelho.
+O **`oxygen.expect`** é um script Expect que automatiza a conexão Telnet e a execução de comandos em dispositivos de rede. Siga as etapas abaixo para utilizá-lo:
 
-### Coleta de Dados de Entrada
-O script limpa a tela, exibe um banner e coleta informações de entrada do usuário, incluindo o nome do arquivo de entrada, nome do arquivo de saída, endereço IP para Telnet, nome de usuário Telnet e senha Telnet.
+1. **Execução do Script**:
+    
+    Execute o script **`oxygen.expect`** a partir do terminal, fornecendo os argumentos necessários na seguinte ordem:
+    
+    - Endereço IP do dispositivo de rede.
+    - Nome de usuário Telnet.
+    - Senha Telnet.
+    - Nome do arquivo contendo os comandos a serem executados.
+    
+    Exemplo de uso:
+    
+    ```bash
+    bash oxygen.expect 10.10.100.0 usuario senha comandos.txt
+    ```
+    
+2. **Processamento Automático**:
+    
+    O script Expect automatiza a conexão Telnet, autenticação e execução dos comandos especificados no arquivo fornecido.
+    
+3. **Mensagens de Conclusão**:
+    
+    O script exibirá mensagens de sucesso durante a execução e uma mensagem de conclusão ao finalizar com sucesso.
+    
 
-### Verificação de Padrão no Arquivo de Entrada
-O script usa a ferramenta `grep` para verificar se as linhas no arquivo de entrada correspondem a um padrão específico (X/Y/Z). Se as linhas corresponderem a esse padrão, ele assume que o arquivo contém IDs de ONTs e ONUs. Caso contrário, exibe uma mensagem de erro.
+### **Funções para Exibição de Mensagens Coloridas**
 
-### Execução do Script Telnet com Expect
-Se o arquivo de entrada for considerado válido, o script utiliza o Expect para executar o script Oxygen (não fornecido neste código-fonte) para coletar dados Telnet das ONUs e ONTs informadas no arquivo de entrada. Os resultados são redirecionados para o arquivo de saída especificado.
+- **`print_error()`**: Exibe mensagens de erro em vermelho.
+- **`print_success()`**: Exibe mensagens de sucesso em verde.
+- **`print_info()`**: Exibe mensagens informativas em cores padrão.
 
-### Limpeza de Arquivos Temporários
-O script realiza a limpeza de arquivos temporários, se necessário, removendo `.output.bak` e `.vortex.tmp` se existirem.
+### **Configuração Inicial**
 
-### Formatação do Arquivo de Saída (Opcional)
-O script pergunta ao usuário se ele deseja extrair apenas a informação "RECV POWER" dos resultados Telnet. Se o usuário optar por fazê-lo, o script formata o arquivo de saída, removendo informações desnecessárias e mantendo apenas os dados relevantes. Os resultados são então exibidos e também salvos em um arquivo com o prefixo "RP_" seguido pelo nome do arquivo de entrada.
+- O script configura cores para mensagens e define funções para mensagens coloridas.
 
-### Conclusão
-Este script simplifica a coleta de dados Telnet e a formatação de resultados, permitindo que o usuário interaja com uma OLT de maneira eficiente e personalizável. Certifique-se de fornecer o script Oxygen para uso completo do sistema.
+### **Processo Telnet**
 
-<br>
+- O script inicia uma sessão Telnet para o dispositivo de rede especificado.
+- Autentica o usuário fornecendo nome de usuário e senha.
+- Executa uma série de comandos Telnet fornecidos em um arquivo, com pausas opcionais entre eles.
+- O script exibe mensagens de sucesso e erro durante o processo.
 
-## Documentação: Código 2 - Script para Coleta de Dados via Telnet
+### **Mensagem de Conclusão**
 
-Este script em Expect é projetado para automatizar a interação Telnet com um dispositivo de rede, permitindo a execução de comandos Telnet e a coleta de resultados. A documentação a seguir detalha suas principais características e funcionalidades.
-
-### Configuração das Cores e Funções de Mensagens Coloridas
-O script começa definindo variáveis de cores para exibir mensagens coloridas no terminal. Em seguida, são definidas três funções para exibir mensagens coloridas:
-- `print_error`: Exibe mensagens em vermelho.
-- `print_success`: Exibe mensagens em verde.
-- `print_info`: Exibe mensagens em cores padrão.
-
-### Verificação de Argumentos
-O script verifica se o número correto de argumentos foi fornecido ao ser executado. Ele espera receber quatro argumentos: o endereço IP do host, o nome de usuário, a senha e o nome do arquivo de comandos. Se o número de argumentos for incorreto, exibe uma mensagem de erro e encerra a execução.
-
-### Inicialização e Autenticação Telnet
-O script inicia uma sessão Telnet com o host especificado e realiza a autenticação fornecendo o nome de usuário e senha. Ele espera os prompts "Login:" e "Password:" e responde apropriadamente.
-
-## Elevação de privilégio
-Quando logado, o script aguarda uma shell efetua ma elevação de privilégio 
-
-### Execução de Comandos Telnet
-Após a autenticação, o script executa comandos Telnet armazenados em um arquivo especificado. Ele lê os comandos do arquivo e os envia para o host Telnet. Após cada comando, o script aguarda o prompt "#", indicando que o comando foi concluído com sucesso.
-
-### Pausas entre Comandos
-O script inclui a opção de adicionar uma pausa de 0,2 segundos entre a execução de cada comando Telnet. Essa pausa pode ser personalizada conforme necessário.
-
-### Conclusão
-Após a execução de todos os comandos Telnet, o script fecha a sessão Telnet e exibe uma mensagem de conclusão em verde, indicando que a execução do script Telnet foi concluída com sucesso.
-Este script é útil para automatizar tarefas de configuração e coleta de dados em dispositivos de rede usando Telnet, tornando o processo mais eficiente e automatizado.
-
-<br>
-
-## Feedback, Perguntas e Relatórios de Problemas
-
-Se quiser contribuir para a melhoria do projeto Oxygen, sugestões, perguntas ou encontrar algum problema, estou aqui para ajudar.
-
-### Sugestões e Melhorias
-
-Se você tiver sugestões ou ideias para melhorar o projeto Oxygen, sinta-se à vontade para compartilhá-las. Você pode fazer isso das seguintes maneiras:
-
-- **Pull Request (PR)**: Se você deseja contribuir diretamente com código, abra um Pull Request com suas alterações propostas. Analisaremos suas contribuições e trabalharemos juntos para incorporá-las ao projeto.
-
-- **Issues**: Use as Issues para sugerir melhorias ou novos recursos. Descreva detalhadamente sua ideia para que eu possa entender e discutir como implementá-la.
-
-### Relatórios de Problemas (Bugs)
-
-Encontrou um bug ou problema em Oxygen? Você pode relatar problemas das seguintes maneiras:
-
-- **Issues**: Abra uma Issue descrevendo o problema. Inclua informações relevantes, como o ambiente em que o erro ocorreu, etapas para reproduzi-lo e qualquer mensagem de erro que tenha recebido.
-
-- **Site**: Você também pode reportar bugs em [gustavo404.com/sobre](https://www.gustavo404.com/sobre). Use os meios de contato para enviar detalhes sobre o problema encontrado.
-
-### Perguntas e Suporte
-
-Se você tiver alguma pergunta sobre como usar Oxygen ou precisar de suporte, Você pode fazer o seguinte:
-
-- **Issues Existentes**: Verifique se já existe uma Issue relacionada à sua pergunta. Talvez a resposta que você procura já esteja lá.
-
-- **Novas Issues**: Se sua pergunta não estiver coberta nas Issues existentes, sinta-se à vontade para criar uma nova Issue com sua pergunta. Ficarei feliz em responder e ajudar.
-
-- **Contato pelo Site**: Você também pode entrar em contato conosco através do site [gustavo404.com/sobre](https://www.gustavo404.com/sobre). Utilize os meios de contato para enviar suas perguntas ou dúvidas.
-
-Agradeço por sua contribuição, feedback e envolvimento na comunidade do projeto Oxygen.
-
-<br>
-
-## Licença
-
-O código-fonte do projeto Oxygen é disponibilizado sob os termos da Licença Pública Geral GNU versão 2.0 (GPL 2.0). Isso significa que você é livre para usar, modificar e distribuir o código de acordo com os termos da GPL 2.0. Certifique-se de ler e entender os detalhes da licença antes de utilizar o projeto.
+- O script exibe uma mensagem de conclusão quando a execução do script Telnet é bem-sucedida.
