@@ -68,7 +68,8 @@ foreach comando $lista_comandos {
   # Adicionar uma pausa de X segundos após cada comando, se necessário (descomente a linha abaixo e altere o valor de "0.3" para o número de segundos desejado)
   sleep 0.5
 }
-# >/
+
+send ""
 # ... e aqui termina o script Telnet
 
 # Exibir mensagem de conclusão do script
