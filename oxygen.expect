@@ -74,4 +74,4 @@ foreach comando $lista_comandos {
 # Exibir mensagem de conclusão do script
 sleep 0.5
 puts ""
-print_success "[\!] Execução do script Telnet concluída com sucesso!"
+print_success "Execução do script Telnet concluída com sucesso!"
