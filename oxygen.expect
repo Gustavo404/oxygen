@@ -62,17 +62,27 @@ set lista_comandos [split $comandos "\n"]
 
 # Executar comandos Telnet com pausas de X segundos entre os comandos
 foreach comando $lista_comandos {
-  send "$comando\r"
+    send "$comando\r"
+    expect {
+      "#"
+      {
+        # Linha esperada, continue com o próximo comando
+        # Adicionar uma pausa de X segundos após cada comando, se necessário
+        sleep 0.5
+      }
+      -re {Press any key to continue Ctrl\+c to stop} {
+        # Lidar com a mensagem "Press any key to continue Ctrl+c to stop"
+        send "\r"
+        expect "#"
+        sleep 0.5
+      }
+    }
+  }
+  
+  send "\r"
   expect "#"
-
-  # Adicionar uma pausa de X segundos após cada comando, se necessário (descomente a linha abaixo e altere o valor de "0.3" para o número de segundos desejado)
-  sleep 0.5
-}
-
-send "\r"
-expect "#"
-
-# ... e aqui termina o script Telnet
+  
+  # ... e aqui termina o script Telnet
 
 # Exibir mensagem de conclusão do script
 sleep 0.5
