@@ -135,8 +135,8 @@ function formatar_arquivo_saida() {
     separator
 
     # Extratores de dados: (com variante para teste e debug)
-    grep -E 'RECV POWER   :|onu is in unactive!|\[ ERR ' "$output" # apenas exibição
-    grep -E 'RECV POWER   :|onu is in unactive!|\[ ERR ' "$output" > "RP_$input" # grava a extração
+    grep -aE 'RECV POWER   :|onu is in unactive!|\[ ERR ' "$output" # apenas exibição
+    grep -aE 'RECV POWER   :|onu is in unactive!|\[ ERR ' "$output" > "RP_$input" # grava a extração
   else
     yellow_message "Você escolheu não filtrar o arquivo."
   fi
